@@ -1,23 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, Suspense, lazy } from "react";
+import "./App.css";
+
+// Lazy imports
+const About = lazy(() => import("./About"));
+const Contact = lazy(() => import("./Contact"));
 
 function App() {
+  const [activeTab, setActiveTab] = useState(null);
+
+  const renderTab = () => {
+    if (activeTab === "about") {
+      return (
+        <Suspense fallback={<div className="loading">Loading About...</div>}>
+          <About />
+        </Suspense>
+      );
+    }
+    if (activeTab === "contact") {
+      return (
+        <Suspense fallback={<div className="loading">Loading Contact...</div>}>
+          <Contact />
+        </Suspense>
+      );
+    }
+    return <div className="loading">👉 Select a tab above</div>;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="app">
+      <h1 className="title">React Lazy + Suspense 🚀</h1>
+
+      {/* Tabs */}
+      <div className="tabs">
+        <button
+          onClick={() => setActiveTab("about")}
+          className={activeTab === "about" ? "tab active" : "tab"}
         >
-          Learn React
-        </a>
-      </header>
+          About
+        </button>
+        <button
+          onClick={() => setActiveTab("contact")}
+          className={activeTab === "contact" ? "tab active" : "tab"}
+        >
+          Contact
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      <div className="tab-content">{renderTab()}</div>
     </div>
   );
 }
